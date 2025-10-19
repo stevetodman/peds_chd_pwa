@@ -1,0 +1,43 @@
+{
+  "image": "assets/cxr/cxr_synthetic.svg",
+  "width": 512,
+  "height": 512,
+  "instructions": "Click the target region as precisely as you can. Within the green radius counts as correct.",
+  "targets": [
+    {
+      "name": "Cardiac silhouette center",
+      "cx": 256,
+      "cy": 400,
+      "r": 42,
+      "hint": "Lower center chest"
+    },
+    {
+      "name": "Right hemidiaphragm apex",
+      "cx": 360,
+      "cy": 430,
+      "r": 28,
+      "hint": "Right lower chest"
+    },
+    {
+      "name": "Carina (tracheal bifurcation)",
+      "cx": 256,
+      "cy": 210,
+      "r": 22,
+      "hint": "Midline above the heart"
+    },
+    {
+      "name": "Left costophrenic angle",
+      "cx": 160,
+      "cy": 450,
+      "r": 26,
+      "hint": "Left base"
+    },
+    {
+      "name": "Right upper lobe apex",
+      "cx": 380,
+      "cy": 120,
+      "r": 26,
+      "hint": "Right lung apex"
+    }
+  ]
+}
