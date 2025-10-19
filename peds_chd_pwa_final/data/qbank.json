@@ -1,0 +1,277 @@
+[
+  {
+    "stem": "Which congenital heart defect classically presents with a harsh holosystolic murmur at the left lower sternal border and a loud P2 if pulmonary hypertension develops?",
+    "choices": [
+      "Ventricular septal defect (VSD)",
+      "Atrial septal defect (ASD)",
+      "Patent ductus arteriosus (PDA)",
+      "Coarctation of the aorta"
+    ],
+    "answer_index": 0,
+    "explanation": "A restrictive or moderate VSD produces a holosystolic murmur at the left lower sternal border; chronic left\u2011to\u2011right shunting can lead to pulmonary hypertension and loud P2."
+  },
+  {
+    "stem": "Fixed split S2 and a systolic ejection murmur at the left upper sternal border most strongly suggests which lesion?",
+    "choices": [
+      "Tetralogy of Fallot",
+      "Atrial septal defect (secundum)",
+      "Pulmonary valve atresia",
+      "Truncus arteriosus"
+    ],
+    "answer_index": 1,
+    "explanation": "ASD produces increased right heart flow and delayed pulmonic valve closure \u2192 fixed split S2."
+  },
+  {
+    "stem": "A continuous \u2018machinery\u2019 murmur best heard at the left infraclavicular area is most consistent with:",
+    "choices": [
+      "Patent ductus arteriosus (PDA)",
+      "Pulmonary stenosis",
+      "Aortic stenosis",
+      "Ebstein anomaly"
+    ],
+    "answer_index": 0,
+    "explanation": "Persistent flow from aorta to pulmonary artery produces a continuous murmur in PDA."
+  },
+  {
+    "stem": "Cyanosis that improves with squatting in a toddler most commonly occurs with:",
+    "choices": [
+      "Transposition of the great arteries",
+      "Tetralogy of Fallot",
+      "Total anomalous pulmonary venous return",
+      "Hypoplastic left heart syndrome"
+    ],
+    "answer_index": 1,
+    "explanation": "Squatting increases systemic vascular resistance and reduces right\u2011to\u2011left shunting across the VSD in Tetralogy."
+  },
+  {
+    "stem": "An infant with upper\u2011extremity hypertension and diminished femoral pulses most likely has:",
+    "choices": [
+      "Coarctation of the aorta",
+      "Total anomalous pulmonary venous return",
+      "Tricuspid atresia",
+      "Double\u2011outlet right ventricle"
+    ],
+    "answer_index": 0,
+    "explanation": "Classic coarctation signs: arm hypertension with lower\u2011extremity hypoperfusion."
+  },
+  {
+    "stem": "Egg\u2011on\u2011a\u2011string cardiac silhouette on chest radiograph is most associated with:",
+    "choices": [
+      "Tricuspid atresia",
+      "Transposition of the great arteries",
+      "Truncus arteriosus",
+      "Anomalous left coronary artery from pulmonary artery"
+    ],
+    "answer_index": 1,
+    "explanation": "Narrowed mediastinum with parallel great vessels suggests TGA."
+  },
+  {
+    "stem": "A neonate becomes profoundly cyanotic when the ductus arteriosus closes. Which lesion is most likely ductal\u2011dependent?",
+    "choices": [
+      "Pulmonary atresia",
+      "Atrial septal defect",
+      "Small muscular VSD",
+      "Bicuspid aortic valve"
+    ],
+    "answer_index": 0,
+    "explanation": "Pulmonary blood flow depends on a patent ductus in pulmonary atresia."
+  },
+  {
+    "stem": "Wide pulse pressure and bounding pulses in a child with a continuous murmur suggests:",
+    "choices": [
+      "Severe aortic stenosis",
+      "Patent ductus arteriosus with significant shunt",
+      "Hypertrophic cardiomyopathy",
+      "Pulmonary hypertension"
+    ],
+    "answer_index": 1,
+    "explanation": "Runoff into the pulmonary circulation widens pulse pressure in significant PDA."
+  },
+  {
+    "stem": "Which finding is LEAST consistent with Tetralogy of Fallot?",
+    "choices": [
+      "Right ventricular outflow tract obstruction",
+      "Overriding aorta",
+      "Atrial septal defect",
+      "Ventricular septal defect"
+    ],
+    "answer_index": 2,
+    "explanation": "TOF: VSD, overriding aorta, RVOT obstruction, RV hypertrophy. ASD is not required."
+  },
+  {
+    "stem": "A harsh systolic ejection murmur at the left upper sternal border with a systolic click that decreases with inspiration suggests:",
+    "choices": [
+      "Pulmonary valve stenosis",
+      "Tricuspid regurgitation",
+      "Aortic stenosis",
+      "Mitral valve prolapse"
+    ],
+    "answer_index": 0,
+    "explanation": "Pulmonary stenosis often has an ejection click that softens with inspiration."
+  },
+  {
+    "stem": "Lower\u2011extremity cyanosis with normal upper\u2011extremity saturation (\u2018differential cyanosis\u2019) most classically occurs in:",
+    "choices": [
+      "PDA with pulmonary hypertension and reversed shunt",
+      "ASD with left\u2011to\u2011right shunt",
+      "Small VSD",
+      "Tricuspid atresia"
+    ],
+    "answer_index": 0,
+    "explanation": "Reversal of ductal shunt can desaturate distal aorta while arms remain pink."
+  },
+  {
+    "stem": "On exam, a neonate has a single loud S2 and severe cyanosis within hours of birth. Chest X\u2011ray shows increased pulmonary vascular markings. Best initial stabilizing therapy is:",
+    "choices": [
+      "High\u2011dose diuretics",
+      "Prostaglandin E1 infusion",
+      "Indomethacin",
+      "Immediate beta\u2011blocker"
+    ],
+    "answer_index": 1,
+    "explanation": "Many ductal\u2011dependent lesions require PGE1 to maintain ductal patency acutely."
+  },
+  {
+    "stem": "A fixed split S2 results from:",
+    "choices": [
+      "Delayed aortic valve closure during inspiration",
+      "Decreased right ventricular compliance",
+      "Equalization of right\u2011sided filling across the respiratory cycle",
+      "Aortic regurgitation"
+    ],
+    "answer_index": 2,
+    "explanation": "In ASD, increased RV volume causes constant delay of P2 regardless of respiration."
+  },
+  {
+    "stem": "A late systolic murmur with a midsystolic click at the apex becomes louder with Valsalva. Most likely diagnosis:",
+    "choices": [
+      "Mitral valve prolapse",
+      "Aortic stenosis",
+      "Hypertrophic cardiomyopathy",
+      "Tricuspid regurgitation"
+    ],
+    "answer_index": 0,
+    "explanation": "Classic MVP findings; although not congenital per se, commonly tested in pediatrics."
+  },
+  {
+    "stem": "Boot\u2011shaped heart on CXR is most commonly seen in:",
+    "choices": [
+      "Tetralogy of Fallot",
+      "Truncus arteriosus",
+      "Ebstein anomaly",
+      "Total anomalous pulmonary venous return"
+    ],
+    "answer_index": 0,
+    "explanation": "RV hypertrophy and upturned apex create the \u2018boot\u2019 silhouette in TOF."
+  },
+  {
+    "stem": "Which congenital lesion most commonly causes paradoxical emboli due to right\u2011to\u2011left shunt with Valsalva or at rest?",
+    "choices": [
+      "Patent foramen ovale",
+      "Bicuspid aortic valve",
+      "Pulmonary stenosis",
+      "Coarctation of the aorta"
+    ],
+    "answer_index": 0,
+    "explanation": "PFO can transiently shunt right\u2011to\u2011left and allow embolic passage."
+  },
+  {
+    "stem": "A neonate with severe cyanosis improves with knee\u2011to\u2011chest positioning. The physiology most improved is:",
+    "choices": [
+      "Increased systemic venous return",
+      "Reduced systemic vascular resistance",
+      "Increased afterload reducing right\u2011to\u2011left shunt",
+      "Improved pulmonary venous mixing in the left atrium"
+    ],
+    "answer_index": 2,
+    "explanation": "Knee\u2011to\u2011chest raises SVR, reducing right\u2011to\u2011left shunting in TOF physiology."
+  },
+  {
+    "stem": "Which fetal exposure is most associated with persistent patency of the ductus arteriosus after birth?",
+    "choices": [
+      "Maternal rubella infection",
+      "ACE inhibitor exposure",
+      "Fetal alcohol exposure",
+      "Maternal SSRI exposure"
+    ],
+    "answer_index": 0,
+    "explanation": "Congenital rubella can cause PDA along with cataracts and sensorineural hearing loss."
+  },
+  {
+    "stem": "A neonate with cyanosis, single S2, and no murmur is found to have parallel great arteries on echo. Which immediate intervention is lifesaving before definitive surgery?",
+    "choices": [
+      "Balloon atrial septostomy",
+      "Coil embolization of the PDA",
+      "Balloon valvuloplasty",
+      "Ventricular septal defect closure"
+    ],
+    "answer_index": 0,
+    "explanation": "In TGA with inadequate mixing, Rashkind (balloon atrial septostomy) improves mixing."
+  },
+  {
+    "stem": "Which lesion is most likely to present with heart failure symptoms at 4\u20138 weeks due to falling pulmonary vascular resistance and increasing left\u2011to\u2011right shunt?",
+    "choices": [
+      "Large VSD",
+      "Tetralogy of Fallot",
+      "Pulmonary atresia",
+      "Tricuspid atresia"
+    ],
+    "answer_index": 0,
+    "explanation": "As PVR drops, shunt increases in large VSD, causing tachypnea/poor feeding."
+  },
+  {
+    "stem": "An infant with severe cyanosis has a normal\u2011sized heart and decreased pulmonary vascular markings on CXR. This pattern suggests:",
+    "choices": [
+      "Tetralogy of Fallot",
+      "Truncus arteriosus",
+      "Transposition with VSD",
+      "Total anomalous pulmonary venous return (obstructed)"
+    ],
+    "answer_index": 0,
+    "explanation": "Decreased pulmonary flow is typical in TOF; heart size often normal."
+  },
+  {
+    "stem": "Squatting in Tetralogy of Fallot improves oxygenation primarily by:",
+    "choices": [
+      "Decreasing preload",
+      "Increasing systemic vascular resistance",
+      "Decreasing pulmonary vascular resistance",
+      "Increasing heart rate"
+    ],
+    "answer_index": 1,
+    "explanation": "Raised SVR reduces right\u2011to\u2011left shunting across the VSD."
+  },
+  {
+    "stem": "A continuous murmur that disappears after administration of indomethacin in a preterm infant most likely represents:",
+    "choices": [
+      "Patent ductus arteriosus closure",
+      "Opening of a PDA",
+      "Worsening aortic stenosis",
+      "Development of a VSD"
+    ],
+    "answer_index": 0,
+    "explanation": "Indomethacin promotes closure of the PDA by inhibiting prostaglandins."
+  },
+  {
+    "stem": "Which feature distinguishes truncus arteriosus from transposition of the great arteries on echocardiography?",
+    "choices": [
+      "Overriding aorta",
+      "Single arterial trunk giving rise to systemic, coronary, and pulmonary arteries",
+      "Ventricular septal defect",
+      "Parallel great vessels"
+    ],
+    "answer_index": 1,
+    "explanation": "Truncus has a single arterial trunk with a VSD; TGA has two parallel great vessels."
+  },
+  {
+    "stem": "A neonate with differential cyanosis (lower body blue, upper body pink) most likely has:",
+    "choices": [
+      "PDA with coarctation of the aorta and reversed shunt",
+      "TOF with PDA",
+      "PFO with L\u2192R shunt",
+      "Isolated ASD"
+    ],
+    "answer_index": 0,
+    "explanation": "Reverse shunt through a PDA distal to left subclavian can desaturate the lower body."
+  }
+]
