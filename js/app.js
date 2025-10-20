@@ -19,8 +19,10 @@ window.addEventListener('load', () => navTo(location.hash || '#/home'));
 
 async function registerSW() {
   if ('serviceWorker' in navigator) {
+    const swUrl = new URL('sw.js', window.location.href);
+    const scopeUrl = new URL('./', swUrl);
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register(swUrl.href, { scope: scopeUrl.href });
       document.getElementById('swStatus').textContent = 'Service worker: registered';
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
       reg.addEventListener('updatefound', () => {

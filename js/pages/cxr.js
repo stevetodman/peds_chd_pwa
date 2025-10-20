@@ -29,6 +29,7 @@ export default function cxr() {
     const hintEl = document.getElementById('hint');
     const imgNameEl = document.getElementById('imgName');
 
+    startBtn.disabled = true;
     let data = null;
     let img = new Image();
     let order = [];
@@ -46,11 +47,26 @@ export default function cxr() {
     }
 
     async function loadData() {
-      const res = await fetch('data/cxr_tasks.json');
-      data = await res.json();
-      img.src = data.image;
-      img.onload = () => { drawBase(); };
-      imgNameEl.textContent = data.image;
+      try {
+        const dataUrl = new URL('data/cxr_tasks.json', window.location.href);
+        const res = await fetch(dataUrl);
+        if (!res.ok) throw new Error('Failed to load CXR targets');
+        const payload = await res.json();
+        if (!payload || !Array.isArray(payload.targets)) {
+          throw new Error('Invalid CXR dataset');
+        }
+        data = payload;
+        img.src = data.image;
+        img.onload = () => { drawBase(); };
+        imgNameEl.textContent = data.image;
+      } catch (err) {
+        console.error(err);
+        hintEl.textContent = 'Unable to load dataset. Please check your connection.';
+        imgNameEl.textContent = 'Unavailable';
+        nextBtn.disabled = true;
+      } finally {
+        startBtn.disabled = !data;
+      }
     }
 
     function next() {
@@ -86,9 +102,14 @@ export default function cxr() {
     });
 
     startBtn.addEventListener('click', () => {
+      if (!data || !Array.isArray(data.targets) || data.targets.length === 0) {
+        alert('The dataset is still loading. Please try again shortly.');
+        return;
+      }
       score = 0; attempted = 0; idx = -1;
       order = Array.from(data.targets.keys()).sort(()=>Math.random()-0.5);
       scoreEl.textContent = 'Score: 0 / 0';
+      nextBtn.disabled = true;
       next();
     });
     nextBtn.addEventListener('click', () => next());
