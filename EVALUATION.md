@@ -26,7 +26,7 @@
 ## Data & assets
 - **Content files:** Question bank, CXR task definitions, and an EKG CSV sample live under `data/` for easy customization, and are pre-cached by the service worker. 【F:data/qbank.json†L1-L120】【F:data/cxr_tasks.json†L1-L33】【F:sw.js†L3-L23】
 - **Static assets:** Icons and sample imagery live under `assets/` and are referenced in both the manifest and service worker precache list. 【F:sw.js†L3-L23】【F:index.html†L10-L27】
-- **Repository duplication:** The `peds_chd_pwa_final/` directory mirrors the root application, which risks divergent maintenance if both copies change independently. 【F:peds_chd_pwa_final/README.md†L1-L5】
+- **Single source of truth:** The live app and deployable assets now live exclusively in the repository root; release bundles are produced on demand per the README workflow. 【F:README.md†L1-L33】【F:README.md†L35-L56】
 
 ## Deployment & configuration
 - **Hosting:** `vercel.json` enforces long-lived immutable caching for static assets, short caching for data files, a `Service-Worker-Allowed` header, and SPA rewrites to `index.html`. 【F:vercel.json†L1-L33】
@@ -46,13 +46,11 @@
 | --- | --- | --- |
 | High | Question bank persistence | `userAnswers` is keyed by the visual index (`idx`) instead of the question identifier, so shuffling reorders questions but leaves stored answers tied to previous positions, corrupting progress tracking. Map answers to `state.order[idx]` instead. 【F:js/pages/qbank.js†L44-L83】 |
 | Medium | Script lifecycle | `setView` re-injects inline scripts into `<head>` on every navigation but never removes them, which can leak event listeners and duplicate initialization logic after repeated tab switches. Cleanup the injected script elements once executed or run scripts in an isolated scope. 【F:js/utils.js†L11-L24】 |
-| Medium | Duplicate source tree | Maintaining both root files and `peds_chd_pwa_final/` doubles the surface area for changes and invites configuration drift. Consolidate to a single source of truth. 【F:peds_chd_pwa_final/README.md†L1-L5】 |
 | Low | Legacy helper | The top-level `shuffle` helper is defined but unused, indicating either dead code or incomplete adoption. Remove it or use it to prevent drift. 【F:js/pages/qbank.js†L3-L4】 |
 | Low | Data hygiene | Several JSON/HTML files lack trailing newlines, which can cause lint failures in stricter pipelines. Normalizing formatting would improve tooling compatibility. 【F:data/cxr_tasks.json†L1-L33】【F:offline.html†L1-L20】 |
 
 ## Recommendations
 1. **Fix question bank persistence:** Key `userAnswers` by question id (e.g., `state.order[idx]`) and reset correctly when shuffling to ensure answer history survives reordering. 【F:js/pages/qbank.js†L44-L83】
 2. **Manage inline scripts safely:** Update `setView` to execute inline modules without permanently appending duplicate script nodes, perhaps by using `import()` for module scripts or removing appended nodes after load. 【F:js/utils.js†L11-L24】
-3. **Remove duplicate tree:** Delete or replace `peds_chd_pwa_final/` with a build artifact to avoid maintaining two copies of the app. 【F:peds_chd_pwa_final/README.md†L1-L5】
-4. **Automate cache busting:** Introduce a simple build step (e.g., npm script) to update the `CACHE_NAME` or use hashed asset names to guarantee fresh deployments. 【F:sw.js†L1-L28】
-5. **Add linting/tests:** Even lightweight linting (ESLint, Prettier) and smoke tests (Playwright/Puppeteer) would catch regressions in inline scripts and ensure offline flows remain intact. 【F:js/pages/qbank.js†L5-L88】【F:sw.js†L1-L72】
+3. **Automate cache busting:** Introduce a simple build step (e.g., npm script) to update the `CACHE_NAME` or use hashed asset names to guarantee fresh deployments. 【F:sw.js†L1-L28】
+4. **Add linting/tests:** Even lightweight linting (ESLint, Prettier) and smoke tests (Playwright/Puppeteer) would catch regressions in inline scripts and ensure offline flows remain intact. 【F:js/pages/qbank.js†L5-L88】【F:sw.js†L1-L72】
