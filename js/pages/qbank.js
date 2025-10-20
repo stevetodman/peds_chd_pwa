@@ -1,7 +1,5 @@
 import { html, load, save } from '../utils.js';
 
-function shuffle(arr) { return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
-
 export default function qbank() {
   const state = load('qbank_state', { idx: 0, correct: 0, answered: 0, order: [] });
   const order = state.order && state.order.length ? state.order : [];
