@@ -6,11 +6,20 @@ export function setView(content) {
   app.innerHTML = content;
   const scripts = app.querySelectorAll('script');
   scripts.forEach(old => {
-    const s = document.createElement('script');
-    if (old.type) s.type = old.type;
-    if (old.src) s.src = old.src; else s.textContent = old.textContent;
-    document.head.appendChild(s);
-    old.remove();
+    const newScript = document.createElement('script');
+    const type = old.getAttribute('type');
+    if (type) newScript.type = type;
+
+    const src = old.getAttribute('src');
+    if (src) {
+      newScript.src = src;
+      newScript.addEventListener('load', () => newScript.remove());
+      newScript.addEventListener('error', () => newScript.remove());
+    } else {
+      newScript.textContent = old.textContent;
+    }
+
+    old.replaceWith(newScript);
   });
 }
 export function fmt(n, d=0) { return Number(n).toFixed(d); }

@@ -15,12 +15,20 @@ export function setView(content) {
   // Execute inline scripts
   const scripts = app.querySelectorAll('script');
   scripts.forEach(old => {
-    const s = document.createElement('script');
-    if (old.type) s.type = old.type;         // preserve type="module"
-    if (old.src) s.src = old.src;            // handle <script src="...">
-    else s.textContent = old.textContent;    // inline code
-    document.head.appendChild(s);            // execute
-    old.remove();
+    const newScript = document.createElement('script');
+    const type = old.getAttribute('type');
+    if (type) newScript.type = type;               // preserve type="module"
+
+    const src = old.getAttribute('src');
+    if (src) {
+      newScript.src = src;                         // handle <script src="...">
+      newScript.addEventListener('load', () => newScript.remove());
+      newScript.addEventListener('error', () => newScript.remove());
+    } else {
+      newScript.textContent = old.textContent;     // inline code
+    }
+
+    old.replaceWith(newScript);                    // execute in place
   });
 }
 
