@@ -31,8 +31,27 @@
   <main id="app" class="view" role="tabpanel" aria-live="polite"></main>
 
   <footer class="foot">
-    <small>Offline-first • No external CDNs • <span id="swStatus">Service worker: …</span></small>
+    <small>
+      Offline-first • No external CDNs •
+      <span id="swStatus">Service worker: …</span>
+      • <span id="buildInfo">Build: pending…</span>
+    </small>
   </footer>
+
+  <script>
+    window.__BUILD_STAMP__ = '2025-10-19T23:12:37.935853Z';
+    window.__COMMIT__ = '15e054f';
+    const applyBuildStamp = () => {
+      const el = document.getElementById('buildInfo');
+      if (!el) return;
+      const stamp = window.__BUILD_STAMP__ || new Date().toISOString();
+      const commit = window.__COMMIT__ ? String(window.__COMMIT__).slice(0, 7) : '';
+      const details = commit ? `${stamp} • ${commit}` : stamp;
+      el.textContent = `Build: ${details}`;
+    };
+    if (document.readyState !== 'loading') applyBuildStamp();
+    else document.addEventListener('DOMContentLoaded', applyBuildStamp);
+  </script>
 
   <script type="module" src="js/app.js"></script>
 </body>

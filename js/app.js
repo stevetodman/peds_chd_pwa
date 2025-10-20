@@ -1,4 +1,4 @@
-import { navTo } from './router.js';
+import './router.js';
 import { $, load, save } from './utils.js';
 
 let deferredPrompt = null;
@@ -13,9 +13,6 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
   save('a2hs_ready', false);
 });
-
-window.addEventListener('hashchange', () => navTo(location.hash));
-window.addEventListener('load', () => navTo(location.hash || '#/home'));
 
 async function registerSW() {
   if ('serviceWorker' in navigator) {

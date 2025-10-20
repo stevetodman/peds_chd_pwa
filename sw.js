@@ -1,5 +1,8 @@
 // Offline-first service worker
-const CACHE_NAME = 'peds-chd-pwa-v1-2025-10-19';
+const BUILD_COMMIT = '15e054f';
+const BUILD_STAMP = '2025-10-19T23:12:37.935853Z';
+const CACHE_NAME = `peds-chd-cache-${BUILD_COMMIT || 'dev'}-${BUILD_STAMP.replace(/[:.]/g, '')}`;
+self.__COMMIT__ = BUILD_COMMIT;
 const ASSETS = [
   '/',
   '/index.html',

@@ -45,11 +45,31 @@ export default function qbank() {
     function saveAnswers() { localStorage.setItem('qbank_user_answers', JSON.stringify(userAnswers)); }
 
     async function loadQuestions() {
-      const res = await fetch('data/qbank.json');
-      questions = await res.json();
-      const prevOrder = Array.isArray(state.order) && state.order.length ? state.order.slice() : Array.from(questions.keys());
+      try {
+        const res = await fetch('/data/qbank.json', { cache: 'no-store' });
+        if (!res.ok) {
+          throw new Error(`Request failed with status ${res.status}`);
+        }
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error('qbank.json must export an array of question objects.');
+        }
+        questions = data;
+      } catch (error) {
+        console.error('Failed to load question bank', error);
+        root.innerHTML = `
+          <div class="alert" role="alert">
+            <strong>Question bank unavailable.</strong>
+            <div style="margin-top:.25rem;">${error.message}</div>
+          </div>`;
+        stats.textContent = 'Question bank unavailable.';
+        bar.style.width = '0%';
+        return;
+      }
+
+      const prevOrder = Array.isArray(state.order) && state.order.length ? state.order.slice() : questions.map((_, idx) => idx);
       if (!state.order || !state.order.length) {
-        state.order = Array.from(questions.keys());
+        state.order = questions.map((_, idx) => idx);
       }
       const answerKeys = Object.keys(userAnswers);
       const isLegacy = answerKeys.length && answerKeys.every((key, idx) => Number(key) === idx);
@@ -68,6 +88,13 @@ export default function qbank() {
     }
 
     function render() {
+      if (!questions.length || !state.order.length) {
+        root.innerHTML = `<div class="alert" role="alert">No questions available.</div>`;
+        stats.textContent = 'Question bank unavailable.';
+        bar.style.width = '0%';
+        return;
+      }
+
       const idx = Math.min(state.idx, state.order.length-1);
       const qId = state.order[idx];
       const q = questions[qId];
