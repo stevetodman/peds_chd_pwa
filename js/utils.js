@@ -21,7 +21,19 @@ export function setView(content) {
 
     const src = old.getAttribute('src');
     if (src) {
-      newScript.src = src;                         // handle <script src="...">
+      try {
+        const resolved = new URL(src, window.location.href);
+        if (resolved.origin !== window.location.origin) {
+          console.warn('Blocked remote script injection:', resolved.href);
+          old.remove();
+          return;
+        }
+        newScript.src = resolved.href;             // handle <script src="...">
+      } catch (err) {
+        console.warn('Invalid script URL blocked:', src, err);
+        old.remove();
+        return;
+      }
       newScript.addEventListener('load', () => newScript.remove());
       newScript.addEventListener('error', () => newScript.remove());
     } else {

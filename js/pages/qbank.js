@@ -21,6 +21,10 @@ export default function qbank() {
     const root = document.getElementById('qroot');
     const stats = document.getElementById('stats');
     const bar = document.getElementById('bar');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const resetBtn = document.getElementById('resetBtn');
     const state = JSON.parse(localStorage.getItem('qbank_state') || '{"idx":0,"correct":0,"answered":0,"order":[]}');
     let questions = [];
     let userAnswers = JSON.parse(localStorage.getItem('qbank_user_answers') || '{}');
@@ -76,9 +80,30 @@ export default function qbank() {
     function saveAnswers() { localStorage.setItem('qbank_user_answers', JSON.stringify(userAnswers)); }
 
     async function loadQuestions() {
-      const res = await fetch('data/qbank.json');
-      questions = await res.json();
+      try {
+        const res = await fetch('data/qbank.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Failed to fetch question bank (status ${res.status})`);
+        const payload = await res.json();
+        if (!Array.isArray(payload)) throw new Error('Question bank payload is not an array');
+        questions = payload;
+      } catch (err) {
+        console.error('Unable to load question bank', err);
+        const message = 'We\'re unable to load the question bank right now. Please check your connection and try again.';
+        root.innerHTML = `<p class="alert" role="alert">${message}</p>`;
+        stats.textContent = 'Correct 0 / 0 • 0 remaining';
+        bar.style.width = '0%';
+        state.order = [];
+        state.idx = 0;
+        state.correct = 0;
+        state.answered = 0;
+        state.total = 0;
+        saveState();
+        localStorage.removeItem('qbank_user_answers');
+        [prevBtn, nextBtn, shuffleBtn, resetBtn].forEach(btn => { if (btn) btn.disabled = true; });
+        return;
+      }
       const total = questions.length;
+      [prevBtn, nextBtn, shuffleBtn, resetBtn].forEach(btn => { if (btn) btn.disabled = false; });
       const prevOrder = Array.isArray(state.order) && state.order.length
         ? state.order.slice()
         : Array.from({ length: total }, (_, i) => i);
@@ -147,16 +172,16 @@ export default function qbank() {
       });
     }
 
-    document.getElementById('prevBtn').addEventListener('click', ()=>{ state.idx = Math.max(0, state.idx-1); saveState(); render(); });
-    document.getElementById('nextBtn').addEventListener('click', ()=>{ state.idx = Math.min(state.order.length-1, state.idx+1); saveState(); render(); });
-    document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+    prevBtn?.addEventListener('click', ()=>{ state.idx = Math.max(0, state.idx-1); saveState(); render(); });
+    nextBtn?.addEventListener('click', ()=>{ state.idx = Math.min(state.order.length-1, state.idx+1); saveState(); render(); });
+    shuffleBtn?.addEventListener('click', ()=>{
       state.order = state.order.sort(()=>Math.random()-0.5);
       state.idx = 0;
       recomputeProgress();
       saveState();
       render();
     });
-    document.getElementById('resetBtn').addEventListener('click', ()=>{
+    resetBtn?.addEventListener('click', ()=>{
       state.idx = 0;
       userAnswers = {};
       recomputeProgress();
