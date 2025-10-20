@@ -27,6 +27,39 @@ export default function qbank() {
     let questions = [];
     let userAnswers = JSON.parse(localStorage.getItem('qbank_user_answers') || '{}');
 
+    function sanitizeState(total) {
+      const sanitized = [];
+      const seen = new Set();
+      if (Array.isArray(state.order)) {
+        state.order.forEach((raw) => {
+          const id = Number(raw);
+          if (Number.isInteger(id) && id >= 0 && id < total && !seen.has(id)) {
+            seen.add(id);
+            sanitized.push(id);
+          }
+        });
+      }
+      for (let i = 0; i < total; i += 1) {
+        if (!seen.has(i)) {
+          seen.add(i);
+          sanitized.push(i);
+        }
+      }
+      const validIds = new Set(sanitized);
+      Object.keys(userAnswers).forEach((key) => {
+        const id = Number(key);
+        if (!validIds.has(id)) delete userAnswers[key];
+      });
+      state.order = sanitized;
+      if (!sanitized.length) {
+        state.idx = 0;
+      } else if (state.idx >= sanitized.length) {
+        state.idx = sanitized.length - 1;
+      } else if (state.idx < 0) {
+        state.idx = 0;
+      }
+    }
+
     function recomputeProgress() {
       let correct = 0;
       let answered = 0;
@@ -47,46 +80,63 @@ export default function qbank() {
     async function loadQuestions() {
       const res = await fetch('data/qbank.json');
       questions = await res.json();
-      const prevOrder = Array.isArray(state.order) && state.order.length ? state.order.slice() : Array.from(questions.keys());
-      if (!state.order || !state.order.length) {
-        state.order = Array.from(questions.keys());
-      }
+      const total = questions.length;
+      const prevOrder = Array.isArray(state.order) && state.order.length
+        ? state.order.slice()
+        : Array.from({ length: total }, (_, i) => i);
       const answerKeys = Object.keys(userAnswers);
       const isLegacy = answerKeys.length && answerKeys.every((key, idx) => Number(key) === idx);
       if (isLegacy) {
         const remapped = {};
         answerKeys.forEach((key) => {
           const qIdx = prevOrder[Number(key)];
-          if (qIdx != null) remapped[qIdx] = userAnswers[key];
+          if (Number.isInteger(qIdx) && qIdx >= 0 && qIdx < total) remapped[qIdx] = userAnswers[key];
         });
         userAnswers = remapped;
         saveAnswers();
       }
+      sanitizeState(total);
       recomputeProgress();
       saveState();
+      saveAnswers();
       render();
     }
 
     function render() {
-      const idx = Math.min(state.idx, state.order.length-1);
+      if (!questions.length || !Array.isArray(state.order) || !state.order.length) {
+        root.innerHTML = '<p>No questions available. Add entries to <span class="kbd">data/qbank.json</span>.</p>';
+        stats.textContent = `Correct ${fmt(0)} / ${fmt(0)} • ${fmt(0)} remaining`;
+        bar.style.width = '0%';
+        return;
+      }
+      const idx = Math.min(Math.max(state.idx, 0), state.order.length-1);
+      state.idx = idx;
       const qId = state.order[idx];
       const q = questions[qId];
-      if (!q) return;
+      if (!q) {
+        state.order.splice(idx, 1);
+        sanitizeState(questions.length);
+        recomputeProgress();
+        saveState();
+        saveAnswers();
+        render();
+        return;
+      }
       const selected = userAnswers[qId];
-      root.innerHTML = \`
-        <div><strong>Q\${idx+1} of \${state.order.length}</strong></div>
-        <p style="margin-top:.5rem;">\${q.stem}</p>
+      root.innerHTML = `
+        <div><strong>Q${idx+1} of ${state.order.length}</strong></div>
+        <p style="margin-top:.5rem;">${q.stem}</p>
         <div style="display:grid; gap:.5rem; margin-top: .5rem;">
-          \${q.choices.map((c, i)=>{
+          ${q.choices.map((c, i)=>{
             const isSel = selected === i;
             const correct = q.answer_index === i;
             const color = selected != null ? (correct ? 'background:#eaffea; border-color:#a7f3d0;' : (isSel ? 'background:#fff1f2; border-color:#fecdd3;' : '')) : '';
-            return \`<button class="btn" data-i="\${i}" style="\${color}">\${String.fromCharCode(65+i)}. \${c}</button>\`;
+            return `<button class="btn" data-i="${i}" style="${color}">${String.fromCharCode(65+i)}. ${c}</button>`;
           }).join('')}
         </div>
-        \${selected != null ? \`<div class="alert" style="margin-top:.75rem;"><strong>Answer: \${String.fromCharCode(65+q.answer_index)}</strong><div style="margin-top:.25rem;">\${q.explanation}</div></div>\` : ''}
-      \`;
-      stats.textContent = \`Correct \${fmt(state.correct)} / \${fmt(state.answered)} • \${fmt(state.total - state.answered)} remaining\`;
+        ${selected != null ? `<div class="alert" style="margin-top:.75rem;"><strong>Answer: ${String.fromCharCode(65+q.answer_index)}</strong><div style="margin-top:.25rem;">${q.explanation}</div></div>` : ''}
+      `;
+      stats.textContent = `Correct ${fmt(state.correct)} / ${fmt(state.answered)} • ${fmt(state.total - state.answered)} remaining`;
       bar.style.width = state.answered ? (100*state.answered/Math.max(state.total||1,1))+'%' : '0%';
       root.querySelectorAll('button.btn').forEach(btn => {
         btn.addEventListener('click', () => {
