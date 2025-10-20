@@ -273,16 +273,5 @@
     ],
     "answer_index": 0,
     "explanation": "Reverse shunt through a PDA distal to left subclavian can desaturate the lower body."
-  },
-  {
-    "stem": "Which congenital valvular lesion often has a doming valve on echo and a systolic ejection murmur that increases with inspiration?",
-    "choices": [
-      "Pulmonary valve stenosis",
-      "Aortic valve stenosis",
-      "Mitral stenosis",
-      "Tricuspid atresia"
-    ],
-    "answer_index": 0,
-    "explanation": "Right\u2011sided murmurs typically increase with inspiration; doming valve in pulmonic stenosis."
   }
 ]

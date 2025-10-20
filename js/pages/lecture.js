@@ -1,4 +1,4 @@
-import { html, load, save } from '../utils.js';
+import { html, load } from '../utils.js';
 
 export default function lecture() {
   const saved = load('lecture_embed', '');

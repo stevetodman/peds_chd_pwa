@@ -9,7 +9,7 @@ export default function ekg() {
       <div style="display:flex; gap:.5rem; flex-wrap: wrap; margin-top:.5rem;">
         <input id="file" type="file" accept=".csv" />
         <button class="btn" id="loadSample">Load sample</button>
-        <label>Sampling rate (Hz) <input id="fs" type="number" step="1" min="50" value="200" style="width:8ch;"></label>
+        <label>Horizontal scale (px/s) <input id="scale" type="number" step="10" min="50" value="200" style="width:9ch;"></label>
       </div>
       <p class="small">Calipers: drag across an RR interval. <span id="calipers"></span></p>
     </div>
@@ -21,7 +21,7 @@ export default function ekg() {
     const canvas = document.getElementById('strip');
     const ctx = canvas.getContext('2d');
     const file = document.getElementById('file');
-    const fsEl = document.getElementById('fs');
+    const scaleEl = document.getElementById('scale');
     const calipersEl = document.getElementById('calipers');
 
     let data = [];
@@ -30,11 +30,10 @@ export default function ekg() {
 
     function drawGrid() {
       ctx.fillStyle = '#111'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      const fs = Number(fsEl.value||200);
-      const pxPerSec = 200;
-      const pxPerSmall = pxPerSec * 0.04;
-      const pxPerBig = pxPerSmall * 5;
-      const mvToPx = 50;
+      const pxPerSec = Number(scaleEl.value || 200);
+      const pxPerSmall = pxPerSec * 0.04; // 0.04s
+      const pxPerBig = pxPerSmall * 5;    // 0.20s
+      const mvToPx = 50; // ~10 mm/mV
 
       ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
       for (let x=0; x<canvas.width; x+=pxPerSmall) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
@@ -60,7 +59,7 @@ export default function ekg() {
       if (endX != null)   { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(endX, 0); ctx.lineTo(endX, canvas.height); ctx.stroke(); }
       if (startX != null && endX != null) {
         const dx = Math.abs(endX - startX);
-        const sec = dx / 200;
+        const sec = dx / pxPerSec;
         const hr = 60 / sec;
         calipersEl.textContent = `Δt = ${sec.toFixed(2)} s → HR ≈ ${hr.toFixed(0)} bpm`;
       } else {
@@ -106,6 +105,7 @@ export default function ekg() {
     });
     window.addEventListener('mouseup', () => { dragging = false; });
 
+    scaleEl.addEventListener('change', drawGrid);
     drawGrid();
   </script>
   `;

@@ -1,6 +1,4 @@
-import { html, load, save } from '../utils.js';
-
-function shuffle(arr) { return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]); }
+import { html, load } from '../utils.js';
 
 export default function qbank() {
   const state = load('qbank_state', { idx: 0, correct: 0, answered: 0, order: [] });
@@ -27,52 +25,25 @@ export default function qbank() {
     let questions = [];
     let userAnswers = JSON.parse(localStorage.getItem('qbank_user_answers') || '{}');
 
-    function recomputeProgress() {
-      let correct = 0;
-      let answered = 0;
-      Object.entries(userAnswers).forEach(([key, choice]) => {
-        const q = questions[Number(key)];
-        if (!q || choice == null) return;
-        answered += 1;
-        if (choice === q.answer_index) correct += 1;
-      });
-      state.correct = correct;
-      state.answered = answered;
-      state.total = questions.length;
-    }
-
     function saveState() { localStorage.setItem('qbank_state', JSON.stringify(state)); }
     function saveAnswers() { localStorage.setItem('qbank_user_answers', JSON.stringify(userAnswers)); }
 
     async function loadQuestions() {
       const res = await fetch('data/qbank.json');
       questions = await res.json();
-      const prevOrder = Array.isArray(state.order) && state.order.length ? state.order.slice() : Array.from(questions.keys());
       if (!state.order || !state.order.length) {
         state.order = Array.from(questions.keys());
       }
-      const answerKeys = Object.keys(userAnswers);
-      const isLegacy = answerKeys.length && answerKeys.every((key, idx) => Number(key) === idx);
-      if (isLegacy) {
-        const remapped = {};
-        answerKeys.forEach((key) => {
-          const qIdx = prevOrder[Number(key)];
-          if (qIdx != null) remapped[qIdx] = userAnswers[key];
-        });
-        userAnswers = remapped;
-        saveAnswers();
-      }
-      recomputeProgress();
+      state.total = questions.length;
       saveState();
       render();
     }
 
     function render() {
       const idx = Math.min(state.idx, state.order.length-1);
-      const qId = state.order[idx];
-      const q = questions[qId];
+      const q = questions[state.order[idx]];
       if (!q) return;
-      const selected = userAnswers[qId];
+      const selected = userAnswers[idx];
       root.innerHTML = \`
         <div><strong>Q\${idx+1} of \${state.order.length}</strong></div>
         <p style="margin-top:.5rem;">\${q.stem}</p>
@@ -90,10 +61,11 @@ export default function qbank() {
       bar.style.width = state.answered ? (100*state.answered/Math.max(state.total||1,1))+'%' : '0%';
       root.querySelectorAll('button.btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (userAnswers[qId] != null) return; // already answered
+          if (userAnswers[idx] != null) return; // already answered
           const choice = Number(btn.dataset.i);
-          userAnswers[qId] = choice;
-          recomputeProgress();
+          userAnswers[idx] = choice;
+          if (choice === q.answer_index) state.correct += 1;
+          state.answered += 1;
           saveState(); saveAnswers(); render();
         });
       });
@@ -103,16 +75,10 @@ export default function qbank() {
     document.getElementById('nextBtn').addEventListener('click', ()=>{ state.idx = Math.min(state.order.length-1, state.idx+1); saveState(); render(); });
     document.getElementById('shuffleBtn').addEventListener('click', ()=>{
       state.order = state.order.sort(()=>Math.random()-0.5);
-      state.idx = 0;
-      recomputeProgress();
-      saveState();
-      render();
+      state.idx = 0; state.correct = 0; state.answered = 0; userAnswers = {}; saveState(); saveAnswers(); render();
     });
     document.getElementById('resetBtn').addEventListener('click', ()=>{
-      state.idx = 0;
-      userAnswers = {};
-      recomputeProgress();
-      saveState(); saveAnswers(); render();
+      state.idx = 0; state.correct = 0; state.answered = 0; userAnswers = {}; saveState(); saveAnswers(); render();
     });
 
     loadQuestions();

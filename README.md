@@ -1,4 +1,5 @@
 # Peds CHD PWA (offline-first, Vercel-ready)
 
-Self-contained PWA with Home, Lecture, QBank, CXR game, and EKG reader.
-See deployment steps in previous assistant message.
+This is a self-contained PWA for lecture hub + QBank + CXR game + EKG reader.
+Deploy on Vercel (Other / no build / root output). For local test:
+  python3 -m http.server 8000  # then open http://localhost:8000

@@ -21,17 +21,16 @@ async function registerSW() {
   if ('serviceWorker' in navigator) {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-      document.getElementById('swStatus').textContent = 'Service worker: registered';
+      const s = document.getElementById('swStatus');
+      if (s) s.textContent = 'Service worker: registered';
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
       reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New content available; reload to update.');
-            }
-          });
-        }
+        const nw = reg.installing;
+        if (nw) nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('New content available; reload to update.');
+          }
+        });
       });
     } catch (err) {
       console.warn('SW registration failed', err);
