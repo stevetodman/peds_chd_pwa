@@ -25,12 +25,35 @@ export default function qbank() {
     const bar = document.getElementById('bar');
     const state = JSON.parse(localStorage.getItem('qbank_state') || '{"idx":0,"correct":0,"answered":0,"order":[]}');
     let questions = [];
-    let userAnswers = JSON.parse(localStorage.getItem('qbank_user_answers') || '{}');
+    function loadAnswers() {
+      const raw = localStorage.getItem('qbank_user_answers');
+      if (!raw) return { version: 2, answers: {} };
+      try {
+        const parsed = JSON.parse(raw);
+        if (
+          parsed &&
+          typeof parsed === 'object' &&
+          parsed.version === 2 &&
+          parsed.answers &&
+          typeof parsed.answers === 'object'
+        ) {
+          return { version: 2, answers: parsed.answers };
+        }
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return { version: 1, answers: parsed };
+        }
+      } catch (err) {
+        console.warn('Unable to parse saved answers', err);
+      }
+      return { version: 2, answers: {} };
+    }
+
+    let answerStore = loadAnswers();
 
     function recomputeProgress() {
       let correct = 0;
       let answered = 0;
-      Object.entries(userAnswers).forEach(([key, choice]) => {
+      Object.entries(answerStore.answers).forEach(([key, choice]) => {
         const q = questions[Number(key)];
         if (!q || choice == null) return;
         answered += 1;
@@ -42,7 +65,9 @@ export default function qbank() {
     }
 
     function saveState() { localStorage.setItem('qbank_state', JSON.stringify(state)); }
-    function saveAnswers() { localStorage.setItem('qbank_user_answers', JSON.stringify(userAnswers)); }
+    function saveAnswers() {
+      localStorage.setItem('qbank_user_answers', JSON.stringify({ version: 2, answers: answerStore.answers }));
+    }
 
     async function loadQuestions() {
       const res = await fetch('data/qbank.json');
@@ -51,15 +76,15 @@ export default function qbank() {
       if (!state.order || !state.order.length) {
         state.order = Array.from(questions.keys());
       }
-      const answerKeys = Object.keys(userAnswers);
-      const isLegacy = answerKeys.length && answerKeys.every((key, idx) => Number(key) === idx);
-      if (isLegacy) {
+      if (answerStore.version !== 2) {
         const remapped = {};
-        answerKeys.forEach((key) => {
-          const qIdx = prevOrder[Number(key)];
-          if (qIdx != null) remapped[qIdx] = userAnswers[key];
+        Object.entries(answerStore.answers).forEach(([key, value]) => {
+          const idx = Number(key);
+          if (!Number.isInteger(idx)) return;
+          const qIdx = prevOrder[idx];
+          if (qIdx != null) remapped[qIdx] = value;
         });
-        userAnswers = remapped;
+        answerStore = { version: 2, answers: remapped };
         saveAnswers();
       }
       recomputeProgress();
@@ -72,7 +97,7 @@ export default function qbank() {
       const qId = state.order[idx];
       const q = questions[qId];
       if (!q) return;
-      const selected = userAnswers[qId];
+      const selected = answerStore.answers[qId];
       root.innerHTML = \`
         <div><strong>Q\${idx+1} of \${state.order.length}</strong></div>
         <p style="margin-top:.5rem;">\${q.stem}</p>
@@ -90,9 +115,9 @@ export default function qbank() {
       bar.style.width = state.answered ? (100*state.answered/Math.max(state.total||1,1))+'%' : '0%';
       root.querySelectorAll('button.btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (userAnswers[qId] != null) return; // already answered
+          if (answerStore.answers[qId] != null) return; // already answered
           const choice = Number(btn.dataset.i);
-          userAnswers[qId] = choice;
+          answerStore.answers[qId] = choice;
           recomputeProgress();
           saveState(); saveAnswers(); render();
         });
@@ -110,7 +135,7 @@ export default function qbank() {
     });
     document.getElementById('resetBtn').addEventListener('click', ()=>{
       state.idx = 0;
-      userAnswers = {};
+      answerStore = { version: 2, answers: {} };
       recomputeProgress();
       saveState(); saveAnswers(); render();
     });
