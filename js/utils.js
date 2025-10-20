@@ -12,15 +12,29 @@ export function setView(content) {
   const app = document.getElementById('app');
   app.innerHTML = content;
 
-  // Execute inline scripts
+  // Execute inline scripts without leaving duplicates behind
   const scripts = app.querySelectorAll('script');
-  scripts.forEach(old => {
-    const s = document.createElement('script');
-    if (old.type) s.type = old.type;         // preserve type="module"
-    if (old.src) s.src = old.src;            // handle <script src="...">
-    else s.textContent = old.textContent;    // inline code
-    document.head.appendChild(s);            // execute
-    old.remove();
+  scripts.forEach((old) => {
+    const next = document.createElement('script');
+
+    // Preserve all attributes (type, src, etc.)
+    Array.from(old.attributes).forEach(attr => {
+      next.setAttribute(attr.name, attr.value);
+    });
+
+    if (!next.src) {
+      next.textContent = old.textContent;
+      const removeLater = typeof queueMicrotask === 'function'
+        ? () => queueMicrotask(() => next.remove())
+        : () => setTimeout(() => next.remove(), 0);
+      removeLater();
+    } else {
+      const cleanup = () => next.remove();
+      next.addEventListener('load', cleanup);
+      next.addEventListener('error', cleanup);
+    }
+
+    old.replaceWith(next);
   });
 }
 
