@@ -12,6 +12,10 @@ An installable progressive web app for congenital heart disease teaching. The bu
    This starts a server on <http://localhost:3000> (by default) and enables the service worker.
 3. Build/deploy by pushing to your hosting provider (no additional build step required).
 
+### Quality checks
+
+- Run `npm test` to validate JSON datasets, manifest icons, and other offline assets before deploying. This lightweight check uses Node.js and does not require installing additional dependencies.
+
 ## Features
 
 - Offline-first shell powered by `sw.js` with navigation fallback to `offline.html`.
@@ -19,6 +23,7 @@ An installable progressive web app for congenital heart disease teaching. The bu
 - Local caching for question bank data and SVG-based practice activities.
 - Lecture module supports sandboxed embeds and local video playback.
 - Responsive layout with small CSS footprint and no external CDN dependencies.
+- Defensive runtime guards prevent remote inline scripts from running when views are swapped and surface user-friendly error messages if offline data fetches fail.
 
 ## Customizing content
 

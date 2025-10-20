@@ -69,27 +69,46 @@ export default function ekg() {
     }
 
     function parseCSV(text) {
-      const lines = text.trim().split(/\r?\n/);
+      const trimmed = text == null ? '' : String(text).trim();
+      if (!trimmed) return [];
+      const lines = trimmed.split(/\r?\n/);
       const out = [];
       for (let i=1; i<lines.length; i++) {
         const [t, v] = lines[i].split(',');
-        out.push({ t: parseFloat(t), v: parseFloat(v) });
+        const time = Number.parseFloat(t);
+        const value = Number.parseFloat(v);
+        if (Number.isFinite(time) && Number.isFinite(value)) {
+          out.push({ t: time, v: value });
+        }
       }
       return out;
     }
 
     file.addEventListener('change', async (e) => {
-      const f = e.target.files[0]; if (!f) return;
-      const text = await f.text();
-      data = parseCSV(text);
-      drawGrid();
+      try {
+        const f = e.target.files[0];
+        if (!f) return;
+        const text = await f.text();
+        data = parseCSV(text);
+        drawGrid();
+      } catch (err) {
+        console.error('Unable to load EKG file', err);
+        calipersEl.textContent = 'We could not read that file. Please choose a valid CSV.';
+      }
     });
 
     document.getElementById('loadSample').addEventListener('click', async () => {
-      const res = await fetch('data/ekg_sample.csv');
-      const text = await res.text();
-      data = parseCSV(text);
-      drawGrid();
+      try {
+        const res = await fetch('data/ekg_sample.csv', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Sample fetch failed with status ${res.status}`);
+        const text = await res.text();
+        data = parseCSV(text);
+        if (!data.length) throw new Error('Sample file is empty');
+        drawGrid();
+      } catch (err) {
+        console.error('Unable to load sample EKG', err);
+        calipersEl.textContent = 'Sample strip unavailable. Check your connection or provide a local file.';
+      }
     });
 
     canvas.addEventListener('mousedown', (e) => {
